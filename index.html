@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <script src="https://smtpjs.com/v3/smtp.js"></script>
+
+        <style>
+            body{
+                font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            }
+            .card{
+                height: 100px;
+                width: 180px;
+                border: 1px solid black;
+
+            }
+            .card-s{
+                height: 400px;
+                width: 200px;
+                border: 1px solid black;
+                border-radius: 10px;
+                float: left;
+
+            }
+
+            .cart{
+                position: relative; 
+                height: 400px;
+                width: 300px;
+                
+                border: 1px solid black;
+                border-radius: 10px;
+                float: left;
+                margin-left: 20px;
+                
+
+            }
+
+            .form1{
+                height: 250px;
+                width: 320px;
+                border: 1px solid black;
+                border-radius: 10px;
+                text-align: center;
+                margin: auto;
+                font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+
+            }
+
+            /*.vertical-center {
+                margin: 0;
+                position: absolute;
+                top: 50%;
+                -ms-transform: translateY(-50%);
+                transform: translateY(-50%);
+            }*/
+        </style>
+    </head>
+    <body>
+
+        <div id="form" class="form1">
+            <h3>Hi, please fill the quick sign-up form!</h3>
+            <label for="html">Enter your Name:</label><br>
+            <input type="text" id="inpt1" value="" placeholder="Name..."><br><br>
+            <label for="html">Enter your Email:</label><br>
+            <input type="text" id="inpt2" value="" placeholder="Email..."><br><br>
+            <button onclick="form1()">submit</button>
+        </div>
+
+        <div class="card-s" id="card-s" style="display: none;">
+            <h3>Shopping list</h3>
+
+        <div class="card" id="1">
+            Item-1
+            <br>
+            <br>
+            <button onclick="addcart('1')">add to cart</button>
+            
+        </div>
+        <br>
+
+        <div class="card" id="2">
+            Item-2
+            <br>
+            <br>
+            <button onclick="addcart('2')">add to cart</button>
+        </div>
+        <br>
+
+        </div>
+
+        <div class="cart" id="cart" style="display: none;">
+            <h3>Cart</h3>
+            
+            <!--<div class="vertical-center">-->
+            <button onclick="checkout()" style="position: absolute; bottom: 0; right: 0; height: 50px; border-radius: 5px; width: 50%; margin: auto; cursor: pointer;">
+                Checkout
+            </button>
+            <!--</div>  -->
+
+        </div>
+        
+        <script>
+            const db = [];
+            const countdb = [];
+
+            function addcart(ids){
+                cardId = ids;
+                console.log(cardId);
+                sum = 1;
+
+                var num = 0;
+                for(i=0; i<= db.length; i++)
+                {
+                    if(db[i] === cardId){
+                        num += 1;
+                    }
+                }
+
+                if(num === 0) 
+                {
+                    db.push(cardId);
+                    console.log(db);
+
+                    document.getElementById("cart").innerHTML += 
+                    `
+                    <div class="card" id="`+cardId+`">
+                        Item-`+cardId+`
+                        <button onclick="remove('`+cardId+`1')" style="cursor: pointer;">-</button>
+                        <button onclick="add('`+cardId+`1', '`+cardId+`2', `+cardId+`)" style="cursor: pointer;">+</button>
+                        <div id="`+cardId+`2">
+                        <div id="`+cardId+`1" data-myValue="0"></div>
+                        </div>
+                    </div>
+                    <br>
+                    `;
+                }
+                
+                else
+                {
+                    console.log("already added");
+
+                }
+            }
+
+            function add(lol, lol2, lol3){
+
+                var b = lol;
+                var c = lol2;
+                var d = lol3;
+                var val = parseInt(document.getElementById(b).getAttribute('data-myValue'));
+                console.log(b);
+                console.log(val);
+                var sum = val+1;
+                countdb[d-1] = sum;
+                
+                //document.getElementById(b).value = sum;
+                document.getElementById(c).innerHTML = `
+                <br><br>
+                <div id="`+b+`" data-myValue="`+sum+`">Quntity: `+sum+`</div>
+                `;
+
+            }
+
+            function remove(n){
+                var b=n;
+                document.getElementById(b).value = parseInt(document.getElementById(b).value)-1;
+            }
+
+            function checkout(){
+                console.log(db);
+                console.log(countdb);
+                var dtext = "";
+                for(i=0;i<db.length;i++)
+                {
+                    dtext += "Card "+db[i]+"->"+countdb[i]+",";
+                }
+                console.log(dtext);
+                sendEmail(dtext)
+            }
+
+            function sendEmail(maildata) {
+                Email.send({
+                    Host: "smtp.gmail.com",
+                    Username: "mallick.bot123@gmail.com",
+                    Password: "03215244002",
+                    To: 'souvikmallick03@gmail.com',
+                    From: "mallick.bot123@gmail.com",
+                    Subject: "Project Shopping cart",
+                    Body: "The Checkout Value is "+maildata+"thanks!",
+                })
+                .then(function (message) {
+                alert("mail sent successfully")
+                });
+            }
+
+            function form1()
+            {
+                var ram = document.getElementById("inpt1").value;
+                var laxman = document.getElementById("inpt2").value;
+                console.log(ram);
+                console.log(laxman);
+                if (ram != "" && laxman != "")
+                {
+                    document.getElementById("card-s").style.display = "block";
+                    document.getElementById("cart").style.display = "block";
+                    document.getElementById("form").style.display = "none";
+                    
+                }
+            }
+            
+        </script>
+    </body>
+</html>
